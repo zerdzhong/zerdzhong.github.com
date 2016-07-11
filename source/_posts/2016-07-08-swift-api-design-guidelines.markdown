@@ -5,9 +5,9 @@ date: 2016-07-08 15:00:34 +0800
 comments: true
 categories: 
 ---
-###Swift 3
+### Swift 3
 
-#### 1.Swift API Desgin Guideline
+#### Swift API Desgin Guideline
 
 1. 原因
 
@@ -15,7 +15,8 @@ categories:
 		
 	```
 	DispatchQueue.main.async {
-		self.listDocumentsViewController?.present(signedOutController, animated: true)}
+		self.listDocumentsViewController?.present(signedOutController, animated: true)
+	}
 	```
 		
 	类似上面这种代码给人的感受是 Swift 希望在整个语言层面都能达到的，但是 Cocoa 的 guideline 是基于 Objective-C 的语言风格来的。
