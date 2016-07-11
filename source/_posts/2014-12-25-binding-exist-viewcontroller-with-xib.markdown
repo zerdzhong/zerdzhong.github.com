@@ -12,11 +12,11 @@ categories:
 
 首先新建一个空的xib文件，将xib文件名和viewcontroller类名保持一致。
 
-![](/images/2014-12-25/empty-xib.png)
+![](/images/bindingxib/empty-xib.png)
 
 然后尝试下拖入一个viewcontroller，并且将 file owner 的 custome class改为viewcontroller类名。
 
-![](/images/2014-12-25/add-viewcontroller.png)
+![](/images/bindingxib/add-viewcontroller.png)
 
 勇敢的运行，结果华丽丽的出错了。=_=!
 错误信息是：
@@ -30,10 +30,10 @@ A view can only be associated with at most one view controller at a time!
 
 soga。是因为view已经绑定拖进来的viewcontroller。于是乎，将这个viewcontroller控件删掉，重新拖进来一个UIView控件。
 
-![emptyxib](/images/2014-12-25/addview.png)
+![emptyxib](/images/bindingxib/addview.png)
 
 再连接 file owner 的 view 。
 
-![emptyxib](/images/2014-12-25/setview.png)
+![emptyxib](/images/bindingxib/setview.png)
 
 运行，Bingo! OK 了。

@@ -12,7 +12,7 @@ GCD(Grand Central Dispatch) 是为了提高 OS X 和 iOS 系统在多核处理�
 
 GCD 提供一套纯 C 的 API，需要和 block 配合使用。block 是 GCD 的执行单元，dispatch queue 是组织 block 的，dispatch queue 就是队列，不是线程。将 block 添加到队列中并不会让 block 运行，只是把 block 加到线程末尾。Dispatch queue 来调度 block 的执行。
 
-##Dispatch Queue
+## Dispatch Queue
 
 Dispatch queue 是执行任务的有力工具，dispatch queue 能够异步或者同步的执行任意多个block。在 GCD 中有三中 dispatch queue :
 
@@ -45,7 +45,7 @@ dispatch queue 相对其他队列来说都是并发的，串行的任务只在�
 系统决定同时执行的任务数。假如有100个任务分别加入100个队列中，也不一定会同时执行所有的任务。
 系统会将队列的优先级作为选择哪个任务下一个执行的考虑因素。
 
-##GCD 任务执行方式
+## GCD 任务执行方式
 
 GCD 中有两种任务执行方式：
      异步执行, dispatch_async，意味将任务放入队列之后，主线程不会等待 block 的返回结果，而是立即继续执行下去。

@@ -22,7 +22,7 @@ iOS & OS X 实现多线程的方法的以下几种方式：
 
 苹果官方推荐使用 GCD 或者 NSOperation 结合 NSOperationQueue 的方式实现并发。
 
-##Operation Queues 
+## Operation Queues 
 
 Operation Queues 是以 Operation 为中心。Operation 是 NSOperation 类的实例，是经过封装的 工作单元。NSOperation 是抽象基类，必须被子类继承才能使用。Foundation framework 中有两种已经实现好的子类为：NSInvocationOperation,NSBlockOperation。
 
@@ -39,7 +39,7 @@ Operations 被设计用来帮助提高应用的并发级别，同时也是一个
 
 想实现对于调用线程来说并发的 Operation 需要一些额外的代码来异步的开始 Operation。例如，开辟额外的线程，调用异步的方法等。绝大多数情况是不需要这么做的，只要我们将同步的 Operation 加入到 Operation Queue 中，队列会自动为 Operation 创建一个线程，因此同步的 Operation 加入到队列中之后表现的和异步一样。
 
-###NSInvocationOperation
+### NSInvocationOperation
 
 NSInvocationOperation 是 NSOperation 的子类，当运行的时候，会调用指定对象的指定selector，使用这个类可以省去大量实现自定义 NSOperation 子类的代码，特别是对已有项目修改时已经有了可以执行具体任务的方法的情况。也可以实现根据情况来调用某个方法，比如可以使用 NSInvocationOperation 根据用户输入来动态执行一个 selector。
 
@@ -56,7 +56,7 @@ return theOp;
 }
 ```
 
-###NSBlockOperation
+### NSBlockOperation
 
 NSBlockOperation 是 NSOperation 的子类，是对一个或多个 block 对象的封装，这个类为已经使用 Operation Queue 但不想使用 dispatch queue 的 block 提供了面向对象的封装。也可以使用 block operation 实现 dispatch queue 不支持的依赖，KVO 等特性。
 
@@ -69,7 +69,7 @@ NSBlockOperation* theOp = [NSBlockOperation blockOperationWithBlock: ^{
 
 在创建 block operation 对象之后可以通过 addExecutionBlock: 方法来添加更多的 block。如果需要顺序的执行 blocks ，需要直接使用 dispatch queue。
 
-###自定义 Operation
+### 自定义 Operation
 
 如果 NSBlockOperation 和 NSInvocationOperation 不满足需求，就需要直接实现 NSOperation 的子类添加所需要的行为。NSOperation 提供了一些基础的功能，处理了大部分依赖和 KVO 的工作。
 

@@ -7,7 +7,7 @@ categories:
 ---
 
 
-###越狱程序开发
+### 越狱程序开发
 
 iOS 和 Mac OS X 公用同样的系统内核（Darwin Unix），提供基本一致的底层系统API，甚至连应用程序的文件结构都基本类似。抛开上层 GUI 来看，iOS 和 Mac OS X 可以看作同一个系统，越狱获取了设备的管理员权限，拥有了读写所有文件的能力，Mac OS X 上的命令行工具都可以安装使用。
 
@@ -181,7 +181,7 @@ THEOS 用内建的 Logos 语法对 MobileSubstrate 进行了封装。也提供�
 
 	lldb 是运行在 OSX 中的调试器，和 debugserver 配合可以对 iOS 设备上的 app 进行 debug。
 
-###逆向目标 app 的主要思路
+### 逆向目标 app 的主要思路
 
 #### 演示
 
