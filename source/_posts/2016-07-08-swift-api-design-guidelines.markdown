@@ -1,9 +1,11 @@
 ---
+
 layout: post
 title: "Swift API Design Guidelines"
 date: 2016-07-08 15:00:34 +0800
 comments: true
-categories: 
+categories: Swift
+
 ---
 
 ### Swift API Desgin Guideline

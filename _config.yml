@@ -65,6 +65,25 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 theme: next
 
+# Analytics
+
+baidu_analytics: "23f10de2ba6c47a54a5aa33f272b4a11"
+google_analytics: "UA-80667906-1"
+
+# Comment
+
+duoshuo_shortname: "zdzhong"
+# duoshuo_hotartical: true
+
+# Social links
+
+social:
+  Github: https://github.com/zerdzhong
+
+social_icons:
+  enable: true
+  Github: github
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:

@@ -3,7 +3,7 @@ layout: post
 title: "越狱开发经验小结"
 date: 2015-06-01 23:45:32 +0800
 comments: true
-categories: 
+categories: 越狱开发
 ---
 
 
