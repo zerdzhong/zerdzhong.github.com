@@ -84,6 +84,14 @@ social_icons:
   enable: true
   Github: github
 
+# Search
+
+search:
+  path: search.xml
+  field: post
+
+google_site_verification: "A_pNreyuVVVMDBc8HN2d4waguhMuum-idAeOiPfV1QY"
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
