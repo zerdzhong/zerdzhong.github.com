@@ -120,6 +120,9 @@ font:
 #social:
   #LinkLabel: Link
 
+social:
+  Github: https://github.com/zerdzhong
+
 
 # Social Links Icons
 # Icon Mapping:

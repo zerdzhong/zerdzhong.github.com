@@ -170,11 +170,11 @@ categories: Swift
 
 一个API，两个名字，在 Objective-C 代码中通过 NS\_SWIFT\_NAME 声明一个别名给 Swift 使用，在 Swift 代码中通过 @objc 声明 Obejctive-C 函数名。
 
-![](/images/Swift3/rename.png)
+![](/images/swift3/rename.png)
 
 在 Objective-C 中有很多 NSString 的常量，用来表示一种弱类型, 通过 NS\_EXTENSIOBLE\_STRING\_ENUM 自动处理成强类型。 
 
-![](/images/Swift3/wrapType.png)
+![](/images/swift3/wraptype.png)
 
 \#selector,\#keyPath 来替换原先的 String
 

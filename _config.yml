@@ -75,15 +75,6 @@ google_analytics: "UA-80667906-1"
 duoshuo_shortname: "zdzhong"
 # duoshuo_hotartical: true
 
-# Social links
-
-social:
-  Github: https://github.com/zerdzhong
-
-social_icons:
-  enable: true
-  Github: github
-
 # Search
 
 search:
