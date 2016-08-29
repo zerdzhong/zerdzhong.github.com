@@ -99,7 +99,6 @@ MobileSubstrate 主要由三个部分组成，MobileHooker,MobileLoader 和 Safe
 	  MSHookFunction(CFShow, replaced_CFShow, &original_CFShow);
 	}
 	```
-	
 	通过 \_\_attribute\__\((constructor)) 将函数在 dylib 加载的时候执行， tweak 就是通过这种方式 hook 宿主应用的方法。
 		
 * Safe mode
@@ -155,9 +154,9 @@ THEOS 用内建的 Logos 语法对 MobileSubstrate 进行了封装。也提供�
 	daemon 以后台守护进程存在，没找到好的办法在 daemon 的进程中直接 hook 目标 app ，可以通过 cycript 间接的达到目的（代码不够灵活）。
 	
 	
-###工具集
+### 工具集
 
-####静态分析工具
+#### 静态分析工具
 
 * dumpdecrypted 
 	
@@ -171,7 +170,7 @@ THEOS 用内建的 Logos 语法对 MobileSubstrate 进行了封装。也提供�
 	
 	反汇编器，可以用来查看二进制文件的汇编代码。
 	
-####动态分析工具
+#### 动态分析工具
 
 * cycript
 
