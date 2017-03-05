@@ -1,0 +1,851 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="A_pNreyuVVVMDBc8HN2d4waguhMuum-idAeOiPfV1QY" />
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="越狱程序开发iOS 和 Mac OS X 公用同样的系统内核（Darwin Unix），提供基本一致的底层系统API，甚至连应用程序的文件结构都基本类似。抛开上层 GUI 来看，iOS 和 Mac OS X 可以看作同一个系统，越狱获取了设备的管理员权限，拥有了读写所有文件的能力，Mac OS X 上的命令行工具都可以安装使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="越狱开发经验小结">
+<meta property="og:url" content="http://blog.zdzhong.com/2015/06/02/yue-yu-kai-fa-jing-yan/index.html">
+<meta property="og:site_name" content="zerd's blog">
+<meta property="og:description" content="越狱程序开发iOS 和 Mac OS X 公用同样的系统内核（Darwin Unix），提供基本一致的底层系统API，甚至连应用程序的文件结构都基本类似。抛开上层 GUI 来看，iOS 和 Mac OS X 可以看作同一个系统，越狱获取了设备的管理员权限，拥有了读写所有文件的能力，Mac OS X 上的命令行工具都可以安装使用。">
+<meta property="og:updated_time" content="2017-03-05T08:45:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="越狱开发经验小结">
+<meta name="twitter:description" content="越狱程序开发iOS 和 Mac OS X 公用同样的系统内核（Darwin Unix），提供基本一致的底层系统API，甚至连应用程序的文件结构都基本类似。抛开上层 GUI 来看，iOS 和 Mac OS X 可以看作同一个系统，越狱获取了设备的管理员权限，拥有了读写所有文件的能力，Mac OS X 上的命令行工具都可以安装使用。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 越狱开发经验小结 | zerd's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-80667906-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?23f10de2ba6c47a54a5aa33f272b4a11";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">zerd's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                越狱开发经验小结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-06-02T07:45:32+08:00" content="2015-06-01">
+              2015-06-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/越狱开发/" itemprop="url" rel="index">
+                    <span itemprop="name">越狱开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/06/02/yue-yu-kai-fa-jing-yan/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/02/yue-yu-kai-fa-jing-yan/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="越狱程序开发"><a href="#越狱程序开发" class="headerlink" title="越狱程序开发"></a>越狱程序开发</h3><p>iOS 和 Mac OS X 公用同样的系统内核（Darwin Unix），提供基本一致的底层系统API，甚至连应用程序的文件结构都基本类似。抛开上层 GUI 来看，iOS 和 Mac OS X 可以看作同一个系统，越狱获取了设备的管理员权限，拥有了读写所有文件的能力，Mac OS X 上的命令行工具都可以安装使用。</p>
+<a id="more"></a>
+<p>越狱开发相比于上线 App 开发的区别主要就是存在多种不同形式的 “App”（tweak,command-line tool,preference_bundle…）也可以做一些上线 App 不能做的事情，比如以 root 权限运行，调用私有 API，Hook 其他的 APP。</p>
+<h4 id="Method-Swizzling-hook"><a href="#Method-Swizzling-hook" class="headerlink" title="Method Swizzling(hook)"></a>Method Swizzling(hook)</h4><p>Method Swizzling 是利用 Runtime 特性把一个方法的实现与另一个方法的实现进行替换。只 hook 自己 App 中的方法，并不会影响 App 上线。</p>
+<p>每个类里都有一个 Dispatch Table ，将方法的名字（SEL）跟方法的实现（IMP，指向 C 函数的指针）一一对应。Swizzle 一个方法其实就是在程序运行时在 Dispatch Table 里做点改动，让这个方法的名字（SEL）对应到另个 IMP 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">+ (void)load &#123;</div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        </div><div class="line">        SEL originalSelector = @selector(paymentWithProduct:);</div><div class="line">        SEL swizzledSelector = @selector(swizzling_paymentWithProduct:);</div><div class="line">        </div><div class="line">        //        Class class = [self class];</div><div class="line">        //        Method originalMethod = class_getInstanceMethod(class, originalSelector);</div><div class="line">        //        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);</div><div class="line">        </div><div class="line">        // When swizzling a class method, use the following:</div><div class="line">        Class class = object_getClass((id)self);</div><div class="line">        Method originalMethod = class_getClassMethod(class, originalSelector);</div><div class="line">        Method swizzledMethod = class_getClassMethod(class, swizzledSelector);</div><div class="line">        </div><div class="line">        BOOL didAddMethod = class_addMethod(class,</div><div class="line">                                            originalSelector,</div><div class="line">                                            method_getImplementation(swizzledMethod),</div><div class="line">                                            method_getTypeEncoding(swizzledMethod));</div><div class="line">        </div><div class="line">        if (didAddMethod) &#123;</div><div class="line">            class_replaceMethod(class,</div><div class="line">                                swizzledSelector,</div><div class="line">                                method_getImplementation(originalMethod),</div><div class="line">                                method_getTypeEncoding(originalMethod));</div><div class="line">        &#125; else &#123;</div><div class="line">            method_exchangeImplementations(originalMethod, swizzledMethod);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">#pragma mark- swizzling </div><div class="line">+ (instancetype)swizzling_paymentWithProduct:(SKProduct *)product</div><div class="line">&#123;</div><div class="line">    id res = [self swizzling_paymentWithProduct:product];</div><div class="line">    </div><div class="line">    NSLog(@&quot;swizzling payment&quot;);</div><div class="line">    </div><div class="line">    return res;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="tweak"><a href="#tweak" class="headerlink" title="tweak"></a>tweak</h4><p>tweak 是越狱 iOS 中的重要组成部分，它的作用相当于插件，主要是通过 hook 住宿主应用的方法来提供一些额外的功能，比如通话录音，短信拦截…由于 Method Swizzling 只能作用于本进程的运行时环境，所以 Tweak 想要 hook 宿主应用就需要通过 dylib 的形式被于宿主应用 load 成为宿主应用的一部分，</p>
+<p>MobileSubstrate（Cydia Substrate）是绝大部分 tweak 工作的基础，是一个提供了 Runtime 的 hook 其他方法的 framework。</p>
+<p>MobileSubstrate 主要由三个部分组成，MobileHooker,MobileLoader 和 Safe mode。</p>
+<ul>
+<li><p>MobileHooker</p>
+<p>  MobileHooker 的作用是 Hook 函数，主要包含以下两个函数:</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">void MSHookMessageEx(Class class, SEL selector, IMP replacement, IMP *result);</div><div class="line"></div><div class="line">void MSHookFunction(void* function, void* relpacement, void** p_original);</div></pre></td></tr></table></figure>
+<p>  MSHookMessageEx 作用于 Objective-C函数， MSHookFunction 作用于 C 和 C++ 函数，在进程执行到原始的 function 的时候，转而执行 replacement ,并保存原始 function 的指令和返回地址，可以选择是否执行原始的 function 。</p>
+</li>
+<li><p>MobileLoader</p>
+<p>  MobileLoader 会在 App 运行的时候通过 DYLD_INSERT_LIBRARIES 环境变量运行起来，加载 /Library/MobileSubstrate/DynamicLibraries/     路径下的所有合适的动态库。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// The attribute forces this function to be called on load.</div><div class="line">__attribute__((constructor))</div><div class="line">static void initialize() &#123;</div><div class="line">  NSLog(@&quot;MyExt: Loaded&quot;);</div><div class="line">  MSHookFunction(CFShow, replaced_CFShow, &amp;original_CFShow);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  通过 __attribute__((constructor)) 将函数在 dylib 加载的时候执行， tweak 就是通过这种方式 hook 宿主应用的方法。</p>
+</li>
+<li><p>Safe mode<br>  由于 tweak 可以 Hook 任意的方法，如果 tweak 的对象是 SpringBoard 时，由于 tweak 的奔溃导致 SpringBoard 奔溃时，MobileLoader 会 catch 住这个 crash ,进入 safe mode,在 safe mode 下不会加载任何 tweak。</p>
+</li>
+</ul>
+<h4 id="daemon"><a href="#daemon" class="headerlink" title="daemon"></a>daemon</h4><p>iOS 源于 OSX ，和所有类 UNIX 操作系统一样有 daemon （守护进程），越狱之后放开了苹果的限制之后，可以实现自己的 daemon。iOS 上的 daemon 由一个可执行文件和一个 plist 文件组成。 iOS 的根进程时 launchd ，它会在开机的时候检测 /System/Library/LaunchDaemons 和 /Library/LaunchDaemons 路径下的所有符合规定的 plist 文件。这个 plist 文件记录了 daemon 的基本信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;Program&quot; =&gt; &quot;/usr/libexec/adDaemon&quot;</div><div class="line">  &quot;RunAtLoad&quot; =&gt; 1</div><div class="line">  &quot;KeepAlive&quot; =&gt; 1</div><div class="line">  &quot;Label&quot; =&gt; &quot;cn.domob.adDaemon&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="THEOS"><a href="#THEOS" class="headerlink" title="THEOS"></a>THEOS</h4><p>越狱的开发工具和 普通 APP 的开发不太一样，没法完全依赖 Xcode 。THEOS 就是一个功能简化版的越狱开发 Xcode。</p>
+<p>THEOS 用内建的 Logos 语法对 MobileSubstrate 进行了封装。也提供了快速创建 tweak 和 daemon 的模板。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">#import &lt;SpringBoard/SpringBoard.h&gt;</div><div class="line"></div><div class="line">%hook SpringBoard</div><div class="line"></div><div class="line">-(void)applicationDidFinishLaunching:(id)application &#123;</div><div class="line">	%orig;</div><div class="line">	  </div><div class="line">	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@&quot;Welcome&quot;</div><div class="line">		          									message:@&quot;Hello Tweak&quot;</div><div class="line">				          						   delegate:nil</div><div class="line">						          		  cancelButtonTitle:@&quot;确定&quot;</div><div class="line">								          otherButtonTitles:nil];</div><div class="line">	[alert show];</div><div class="line">	[alert release];</div><div class="line">&#125;</div><div class="line"></div><div class="line">%end</div></pre></td></tr></table></figure>
+<p>以上代码是 hook SpringBoard 的 applicationDidFinishLaunching 方法后弹出一个 alertView。</p>
+<ul>
+<li><p>目前情况</p>
+<p>  tweak 是以 dylib 的形式存在，受限于 tweak 的对象，如果 tweak 的对象是普通的 app ，那么权限很低，依赖性太强。如果 tweak 的是 springboard 就相对灵活，但是较为危险，导致 safe mode。</p>
+<p>  daemon 以后台守护进程存在，没找到好的办法在 daemon 的进程中直接 hook 目标 app ，可以通过 cycript 间接的达到目的（代码不够灵活）。</p>
+</li>
+</ul>
+<h3 id="工具集"><a href="#工具集" class="headerlink" title="工具集"></a>工具集</h3><h4 id="静态分析工具"><a href="#静态分析工具" class="headerlink" title="静态分析工具"></a>静态分析工具</h4><ul>
+<li><p>dumpdecrypted </p>
+<p>  在 AppStore 上的 app 经过了苹果的一层加密，在可执行文件外包了一层，使用 dumdecrypted 工具进行砸壳之后，才能获取到原始的可执行文件。</p>
+</li>
+<li><p>class-dump</p>
+<p>  class-dump 利用 runtime 特性将 Mach-O 格式的二进制文件的头文件信息 dump 出来。</p>
+</li>
+<li><p>idaq/Hopper</p>
+<p>  反汇编器，可以用来查看二进制文件的汇编代码。</p>
+</li>
+</ul>
+<h4 id="动态分析工具"><a href="#动态分析工具" class="headerlink" title="动态分析工具"></a>动态分析工具</h4><ul>
+<li><p>cycript</p>
+<p>  这个工具可以轻松的注入目标 app ，获取对象在内存中的地址，通过对象调用方法，获取数据。</p>
+</li>
+<li><p>lldb + debugserver</p>
+<p>  lldb 是运行在 OSX 中的调试器，和 debugserver 配合可以对 iOS 设备上的 app 进行 debug。</p>
+</li>
+</ul>
+<h3 id="逆向目标-app-的主要思路"><a href="#逆向目标-app-的主要思路" class="headerlink" title="逆向目标 app 的主要思路"></a>逆向目标 app 的主要思路</h3><h4 id="演示"><a href="#演示" class="headerlink" title="演示"></a>演示</h4><ul>
+<li>准备工作<ul>
+<li>砸壳</li>
+<li>class-dump</li>
+</ul>
+</li>
+<li>定位功能<ul>
+<li>cycript     </li>
+</ul>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ol>
+<li>从界面上定位关心的功能，根据 view 层级定位到相应的类名。</li>
+<li>从相应类的头文件中寻找突破点，使用 cycript 快速验证。</li>
+<li>必要时使用 Hopper/idaq 看实现方法。</li>
+</ol>
+<p>相关链接：</p>
+<p><a href="http://nshipster.com/method-swizzling/" target="_blank" rel="external">method-swizzling</a></p>
+<p><a href="http://www.cycript.org/manual/" target="_blank" rel="external">cycript-manual</a></p>
+<p><a href="http://iphonedevwiki.net/index.php/Main_Page" target="_blank" rel="external">iphonedevwiki</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/02/05/ios-concurrency-programming-2/" rel="next" title="iOS 多线程技术总结-2">
+                <i class="fa fa-chevron-left"></i> iOS 多线程技术总结-2
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/08/swift-api-design-guidelines/" rel="prev" title="Swift API Design Guidelines">
+                Swift API Design Guidelines <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/06/02/yue-yu-kai-fa-jing-yan/"
+           data-title="越狱开发经验小结" data-url="http://blog.zdzhong.com/2015/06/02/yue-yu-kai-fa-jing-yan/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="zerdzhong" />
+          <p class="site-author-name" itemprop="name">zerdzhong</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zerdzhong" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#越狱程序开发"><span class="nav-number">1.</span> <span class="nav-text">越狱程序开发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Method-Swizzling-hook"><span class="nav-number">1.1.</span> <span class="nav-text">Method Swizzling(hook)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tweak"><span class="nav-number">1.2.</span> <span class="nav-text">tweak</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#daemon"><span class="nav-number">1.3.</span> <span class="nav-text">daemon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#THEOS"><span class="nav-number">1.4.</span> <span class="nav-text">THEOS</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具集"><span class="nav-number">2.</span> <span class="nav-text">工具集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#静态分析工具"><span class="nav-number">2.1.</span> <span class="nav-text">静态分析工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态分析工具"><span class="nav-number">2.2.</span> <span class="nav-text">动态分析工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逆向目标-app-的主要思路"><span class="nav-number">3.</span> <span class="nav-text">逆向目标 app 的主要思路</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#演示"><span class="nav-number">3.1.</span> <span class="nav-text">演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">3.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zerdzhong</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zdzhong"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+
+</body>
+</html>
