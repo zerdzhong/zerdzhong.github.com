@@ -1,0 +1,903 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="A_pNreyuVVVMDBc8HN2d4waguhMuum-idAeOiPfV1QY" />
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Mach-O 可执行文件格式在OS X和iOS中可执行文件是Mach-O格式的。Mach-O 被设计成替换成 BSD 中 a.out 的可扩展格式，动态链接的特性也随着 OS X 的发展得到支持。本文介绍 Mach-O 文件格式。">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mach-O 可执行文件格式">
+<meta property="og:url" content="http://blog.zdzhong.com/2017/03/06/Mach-O-可执行文件格式/index.html">
+<meta property="og:site_name" content="zerd's blog">
+<meta property="og:description" content="Mach-O 可执行文件格式在OS X和iOS中可执行文件是Mach-O格式的。Mach-O 被设计成替换成 BSD 中 a.out 的可扩展格式，动态链接的特性也随着 OS X 的发展得到支持。本文介绍 Mach-O 文件格式。">
+<meta property="og:image" content="http://blog.zdzhong.com/images/Mach-O_file_format/Mach-O_file_format_basic_structure.png">
+<meta property="og:updated_time" content="2017-04-18T10:56:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mach-O 可执行文件格式">
+<meta name="twitter:description" content="Mach-O 可执行文件格式在OS X和iOS中可执行文件是Mach-O格式的。Mach-O 被设计成替换成 BSD 中 a.out 的可扩展格式，动态链接的特性也随着 OS X 的发展得到支持。本文介绍 Mach-O 文件格式。">
+<meta name="twitter:image" content="http://blog.zdzhong.com/images/Mach-O_file_format/Mach-O_file_format_basic_structure.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Mach-O 可执行文件格式 | zerd's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-80667906-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?23f10de2ba6c47a54a5aa33f272b4a11";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">zerd's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mach-O 可执行文件格式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-06T05:11:34+08:00" content="2017-03-05">
+              2017-03-05
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/06/Mach-O-可执行文件格式/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/06/Mach-O-可执行文件格式/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Mach-O-可执行文件格式"><a href="#Mach-O-可执行文件格式" class="headerlink" title="Mach-O 可执行文件格式"></a>Mach-O 可执行文件格式</h1><p>在OS X和iOS中可执行文件是Mach-O格式的。Mach-O 被设计成替换成 BSD 中 a.out 的可扩展格式，动态链接的特性也随着 OS X 的发展得到支持。本文介绍 Mach-O 文件格式。<br><a id="more"></a></p>
+<h2 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h2><ul>
+<li>Header，每个 Mach-O 文件的开始都是头部，包含了基本文件类型信息，目标架构和说明剩余文件的标志。</li>
+<li>Load Command，头部之后就是一系列长度不定的 load commands，表明了文件的布局和特征，load commands 可以表明：<ul>
+<li>文件在虚拟内存中的初始化结构</li>
+<li>符号表的位置</li>
+<li>程序主线程的初始化执行状态</li>
+<li>包含被引用符号的共享库的名字</li>
+</ul>
+</li>
+<li>Segment,在 load commands 之后所有的 Mach-O 文件，都会包含一个或多个 segment 的数据。每个段（segment）包含一个或多个 section。每个 区（section）包含代码或者某些特定类型的数据。每个段定义了一块虚拟内存的区域用来让动态链接器把进程的空间加载到对应的地址。段和区的布局和数量是由 load commands 和文件类型决定的。</li>
+<li>在用户层链接完成的 Mach-O 文件中，最后一个segment 是 link edit。包含了link edit信息表，包括符号表，字符表等等，用来让动态加载器去链接可执行文件或者 Mach-O bundle依赖的库。<img src="/images/Mach-O_file_format/Mach-O_file_format_basic_structure.png" alt="Mach-O_file_format_basic_structure"></li>
+</ul>
+<h2 id="Header-结构和-Load-Commands"><a href="#Header-结构和-Load-Commands" class="headerlink" title="Header 结构和 Load Commands"></a>Header 结构和 Load Commands</h2><p>一个 Mach-O 文件包含了一种架构的代码和数据，头部结构说明了目标架构由内核来保证，PowerPC 架构的不能在 Intel 架构的机器上运行。</p>
+<p>可以用工具将多种架构的 Mach-O 文件合并在一个二进制文件中。（包含多种架构的文件不是 Mach-O 文件，是多个 Mach-O 文件的 archive）</p>
+<p>segments 和 sections 通常用名字访问，Segment 惯例是两个下划线加上大写的名字（<strong>TEXT），sections的命名是两个下划线加上小写的名字（</strong>text），命名惯例是一个标准但是没有工具保证。</p>
+<p><code>otool -h Mach-O_file</code> 可以打印 header</p>
+<p>例如：</p>
+<table>
+<thead>
+<tr>
+<th>magic</th>
+<th>cputype</th>
+<th>cpusubtype</th>
+<th>caps</th>
+<th>filetype</th>
+<th>ncmds</th>
+<th>sizeofcmds</th>
+<th>flags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MH_MAGIC_64</td>
+<td>ARM64</td>
+<td>ALL</td>
+<td>0x00</td>
+<td>EXECUTE</td>
+<td>69</td>
+<td>7232</td>
+<td>0x00218085</td>
+</tr>
+</tbody>
+</table>
+<p><code>otool -v -l Mach-O_file</code> 可以打印 Load Commands</p>
+<p>例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">Load command 0</div><div class="line">      cmd LC_SEGMENT_64</div><div class="line">  cmdsize 72</div><div class="line">  segname __PAGEZERO</div><div class="line">   vmaddr 0x0000000000000000</div><div class="line">   vmsize 0x0000000100000000</div><div class="line">  fileoff 0</div><div class="line"> filesize 0</div><div class="line">  maxprot ---</div><div class="line">  initprot ---</div><div class="line">   nsects 0</div><div class="line">    flags (none)</div><div class="line">Load command 1</div><div class="line">      cmd LC_SEGMENT_64</div><div class="line">  cmdsize 952</div><div class="line">  segname __TEXT</div><div class="line">   vmaddr 0x0000000100000000</div><div class="line">   vmsize 0x000000000109c000</div><div class="line">  fileoff 0</div><div class="line"> filesize 17416192</div><div class="line">  maxprot r-x</div><div class="line">  initprot r-x</div><div class="line">   nsects 11</div><div class="line">    flags (none)</div><div class="line">Load command 64</div><div class="line">      cmd LC_LOAD_DYLIB</div><div class="line">  cmdsize 56</div><div class="line">     name @rpath/libswiftUIKit.dylib (offset 24)</div><div class="line">     time stamp 2 Thu Jan  1 08:00:02 1970</div><div class="line">  current version 800.10.13</div><div class="line">compatibility version 1.0.0</div></pre></td></tr></table></figure>
+<h2 id="Segments"><a href="#Segments" class="headerlink" title="Segments"></a>Segments</h2><p>Segments 在 Mach-O 文件中定义一些数据、地址和内存保护属性，在动态连接器加载程序的时候这些数据都会被映射到虚拟内存中，一个 segment 包含0或多个 section。</p>
+<p>Segments 可以比在磁盘中的实际大小声明一块更大的内存，比如 <strong>PAGEZERO 段在链接器为PowerPC生成可执行文件时在磁盘的大小为0，但是在虚拟内存中会有一个page的大小。应该 </strong>PAGEZERO 没有数据，所以没有必要在可执行文件中红占用空间。</p>
+<p>为了压缩空间在中间目标文件中只有一个segment，这个 segment 没有名字，包含的所有 section 在最终的目标文件中会被分成不同的 segment， 根据 section 中的 segname 分成不同的 segment。</p>
+<p>为了最优的性能，segment 应该和虚拟内存的边界对齐（在PowerPC和X86处理器上是4096bytes），计算 Segment 的大小是把所有包含的所有 section 大小加上，然后对齐到虚拟内存页大小（4096bytes），所以 segment 的大小是4kb的倍数。</p>
+<p>OS X 可执行文件一般包含的的 segment 有：</p>
+<ul>
+<li>__PAGEZERO，可执行文件的第一个 segment，空指针陷阱段，用于捕捉对空指针的引用立即crash，虚拟内存的第一页。</li>
+<li><strong>TEXT，包含可执行代码和只读的数据，为了能够让内核直接把它从可执行文件映射到共享内存中，静态链接器把这个段的虚拟内存权限设置为不可写。当这个 segment 加载到内存中之后可以在多个进程中共享使用（主要是framework，bundle 和共享库，也可以在一个可执行文件的多进程拷贝执行中使用），由于这个 segment 是不可写的，所以不需要写回磁盘。当内核需要释放物理内存的时候，只需要简单释放一个或多个 </strong>TEXT 页，在需要时再从磁盘中读取。</li>
+<li><strong>DATA，包含可写数据，静态链接器将这个段的虚拟内存权限设置成可读可写，因为可写的原因所以framework和共享库的</strong>DATA段会在每个链接了这个库的进程都拷贝一份。当像__DATA段一样可写可读的段的内存页，内核会把这些内存页标记成copy-on-write。当有进场需要往页里面写数据时，会先拷贝一份作为这个进程私有的再修改。</li>
+<li>__OBJC，包含了 Objective-C 运行时支持库需要的数据。</li>
+<li>__LINKEDIT，包含动态链接器所需要的原始数据，比如符号，字符串，重定位表条目等。</li>
+</ul>
+<h2 id="Sections"><a href="#Sections" class="headerlink" title="Sections"></a>Sections</h2><p><code>otool -s &lt;segname&gt; &lt;sectname&gt;</code> 可以打印 Mach-O 文件中的 section 内容</p>
+<p>__TEXT 段的 sections</p>
+<table>
+<thead>
+<tr>
+<th>Segment and section name</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TEXT, </strong>text</td>
+<td>可执行的机器码</td>
+</tr>
+<tr>
+<td><strong>TEXT, </strong>cstring</td>
+<td>c字符串常量 </td>
+</tr>
+<tr>
+<td><strong>TEXT, </strong>picssymbol_-stub</td>
+<td>Position-independent indirect symbol stubs</td>
+</tr>
+<tr>
+<td><strong>TEXT, </strong>symbol_stub</td>
+<td>Indirect symbol stubs.</td>
+</tr>
+<tr>
+<td><strong>TEXT, </strong>const</td>
+<td>初始化的 const 变量</td>
+</tr>
+<tr>
+<td><strong>TEXT, </strong>literal4</td>
+<td>4byte的字面量</td>
+</tr>
+<tr>
+<td><strong>TEXT, </strong>literal8</td>
+<td>8byte的字面量</td>
+</tr>
+</tbody>
+</table>
+<p>__DATA 段的 sections</p>
+<table>
+<thead>
+<tr>
+<th>Segment and section name</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DATA, </strong>data</td>
+<td>初始化的可变变量</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>la_symbol_ptr</td>
+<td>lazy 符号指针</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>nl_symbol_ptr</td>
+<td>non-lazy 符号指针</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>dyld</td>
+<td>动态链接器使用的占位 section </td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>const</td>
+<td>初始化的重定位 constant 变量</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>mod_init_func</td>
+<td>模块初始化函数，C++编译器会把静态构造函数放在这</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>mod_term_func</td>
+<td>模块终止函数</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>bss</td>
+<td>未初始化的静态变量</td>
+</tr>
+<tr>
+<td><strong>DATA, </strong>common</td>
+<td>未初始化的全局符号定义</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/19/Carthage-简介/" rel="prev" title="Carthage 简介">
+                Carthage 简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/06/Mach-O-可执行文件格式/"
+           data-title="Mach-O 可执行文件格式" data-url="http://blog.zdzhong.com/2017/03/06/Mach-O-可执行文件格式/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="zerdzhong" />
+          <p class="site-author-name" itemprop="name">zerdzhong</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/zerdzhong" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mach-O-可执行文件格式"><span class="nav-number">1.</span> <span class="nav-text">Mach-O 可执行文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本结构"><span class="nav-number">1.1.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Header-结构和-Load-Commands"><span class="nav-number">1.2.</span> <span class="nav-text">Header 结构和 Load Commands</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Segments"><span class="nav-number">1.3.</span> <span class="nav-text">Segments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sections"><span class="nav-number">1.4.</span> <span class="nav-text">Sections</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zerdzhong</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zdzhong"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+
+</body>
+</html>
