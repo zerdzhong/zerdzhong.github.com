@@ -293,8 +293,8 @@ mathjax:
 
 # Disqus
 disqus:
-  enable: false
-  shortname:
+  enable: ture
+  shortname: zdzhong
   count: true
 
 # Hypercomments
